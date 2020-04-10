@@ -6,8 +6,12 @@ public class Solution {
 
     // Complete the checkMagazine function below.
     static void checkMagazine(String[] magazine, String[] note) {
+        final String result = printCheckMagazine(magazine, note);
+        System.out.println(result);
+    }
 
-
+    static String printCheckMagazine(final String[] magazine, final String[] note) {
+        return "a";
     }
 
     private static final Scanner scanner = new Scanner(System.in);

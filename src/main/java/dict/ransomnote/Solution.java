@@ -1,6 +1,9 @@
 package dict.ransomnote;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Solution {
 
@@ -11,7 +14,19 @@ public class Solution {
     }
 
     static String printCheckMagazine(final String[] magazine, final String[] note) {
-        return "a";
+        if (note.length > magazine.length) {
+            return "No";
+        }
+        
+        final List<String> magazineList = Arrays
+                .stream(magazine)
+                .collect(Collectors.toList());
+
+        final boolean result = Arrays
+                .stream(note)
+                .allMatch(magazineList::remove);
+
+        return result ? "Yes" : "No";
     }
 
     private static final Scanner scanner = new Scanner(System.in);

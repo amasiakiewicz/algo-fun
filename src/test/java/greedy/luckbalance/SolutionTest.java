@@ -36,6 +36,56 @@ public class SolutionTest {
                         },
                         29
                 },
+                new Object[] {
+                        0,
+                        new int[][] {
+                                { 2, 1 },
+                                { 1, 1 },
+                                { 10, 0 },
+                                { 5, 0 },
+                        },
+                        12
+                },
+                new Object[] {
+                        1,
+                        new int[][] {
+                                { 5, 1 },
+                                { 2, 1 },
+                                { 1, 1 },
+                                { 8, 1 },
+                                { 10, 0 },
+                                { 5, 0 },
+                        },
+                        15
+                },
+                new Object[] {
+                        1,
+                        new int[][] {
+                                { 5, 0 },
+                        },
+                        5
+                },
+                new Object[] {
+                        1,
+                        new int[][] {
+                                { 5, 1 },
+                        },
+                        5
+                },
+                new Object[] {
+                        0,
+                        new int[][] {
+                                { 5, 1 },
+                        },
+                        -5
+                },
+                new Object[] {
+                        0,
+                        new int[][] {
+                                { 5, 0 },
+                        },
+                        5
+                },
         };
     }
 

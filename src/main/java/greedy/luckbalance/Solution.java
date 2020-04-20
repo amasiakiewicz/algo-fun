@@ -3,13 +3,33 @@ package greedy.luckbalance;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Solution {
 
     // Complete the luckBalance function below.
     static int luckBalance(int k, int[][] contests) {
-        return 0;
+        int result =
+                Arrays
+                        .stream(contests)
+                        .filter(a -> a[1] == 0)
+                        .mapToInt(a -> a[0])
+                        .sum();
+
+        final AtomicInteger nrOfLoses = new AtomicInteger();
+        result +=
+                Arrays
+                        .stream(contests)
+                        .filter(a -> a[1] == 1)
+                        .sorted(Comparator.<int[]>comparingInt(a -> a[0]).reversed())
+                        .peek(a -> nrOfLoses.getAndIncrement())
+                        .mapToInt(a -> nrOfLoses.get() > k ? -a[0] : a[0])
+                        .sum();
+
+        return result;
     }
 
     private static final Scanner scanner = new Scanner(System.in);

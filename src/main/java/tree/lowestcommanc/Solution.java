@@ -1,5 +1,7 @@
 package tree.lowestcommanc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 class Node {
@@ -16,14 +18,37 @@ class Node {
 
 class Solution {
 
-    /*
-    class Node 
-        int data;
-        Node left;
-        Node right;
-    */
     public static Node lca(Node root, int v1, int v2) {
-        return null;
+        
+        final List<Node> pathV1 = getPath(root, v1);
+        final List<Node> pathV2 = getPath(root, v2);
+        
+        pathV1.retainAll(pathV2);
+        
+        return pathV1.get(0);
+    }
+
+    private static List<Node> getPath(Node root, int v) {
+        if (root.data == v) {
+            final ArrayList<Node> path = new ArrayList<>();
+            path.add(root);
+            
+            return path;
+        }
+
+        List<Node> path = null;
+        if (root.left != null) {
+            path = getPath(root.left, v);
+        }
+
+        if (path == null && root.right != null) {
+            path = getPath(root.right, v);
+        }
+        if (path != null) {
+            path.add(root);
+        }
+        
+        return path;
     }
 
     public static Node insert(Node root, int data) {

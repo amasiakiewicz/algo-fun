@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import lombok.AllArgsConstructor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,30 +26,55 @@ public class SolutionTest {
     }
 
     private Object resultParams() {
+        final HeadCouple heads1 = getHeads1();
+        final HeadCouple heads2 = getHeads2();
+        
         return new Object[] {
                 new Object[] {
-                        getHead1(),
-                        "4 3 2 1"
+                        heads1.head1,
+                        heads1.head2,
+                        2
+                },
+                new Object[] {
+                        heads2.head1,
+                        heads2.head2,
+                        3
                 },
         };
     }
 
-    private linkedlist.reversedoubly.Solution.DoublyLinkedListNode getHead1() {
-        final linkedlist.reversedoubly.Solution.DoublyLinkedListNode head = new linkedlist.reversedoubly.Solution.DoublyLinkedListNode(1);
+    private HeadCouple getHeads2() {
+        Solution.SinglyLinkedListNode head1 = new Solution.SinglyLinkedListNode(1);
+        Solution.SinglyLinkedListNode head2 = new Solution.SinglyLinkedListNode(1);
 
-        final linkedlist.reversedoubly.Solution.DoublyLinkedListNode two = new linkedlist.reversedoubly.Solution.DoublyLinkedListNode(2);
-        head.next = two;
-        two.prev = head;
+        final Solution.SinglyLinkedListNode two = new Solution.SinglyLinkedListNode(2);
+        head1.next = two;
 
-        final linkedlist.reversedoubly.Solution.DoublyLinkedListNode three = new linkedlist.reversedoubly.Solution.DoublyLinkedListNode(3);
+        final Solution.SinglyLinkedListNode three = new Solution.SinglyLinkedListNode(3);
         two.next = three;
-        three.prev = two;
+        head2.next = three;
 
-        final linkedlist.reversedoubly.Solution.DoublyLinkedListNode four = new Solution.DoublyLinkedListNode(4);
-        three.next = four;
-        four.prev = three;
-
-        return head;
+        return new HeadCouple(head1, head2);
     }
 
+    private HeadCouple getHeads1() {
+        Solution.SinglyLinkedListNode head1 = new Solution.SinglyLinkedListNode(1);
+        Solution.SinglyLinkedListNode head2 = new Solution.SinglyLinkedListNode(1);
+
+        final Solution.SinglyLinkedListNode two = new Solution.SinglyLinkedListNode(2);
+        head1.next = two;
+        head2.next = two;
+
+        final Solution.SinglyLinkedListNode three = new Solution.SinglyLinkedListNode(3);
+        two.next = three;
+
+        return new HeadCouple(head1, head2);
+    }
+
+    @AllArgsConstructor
+    private class HeadCouple {
+        Solution.SinglyLinkedListNode head1;
+        Solution.SinglyLinkedListNode head2;
+    }
+    
 }

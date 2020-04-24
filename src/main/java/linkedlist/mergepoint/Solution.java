@@ -3,6 +3,8 @@ package linkedlist.mergepoint;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Solution {
@@ -63,7 +65,22 @@ public class Solution {
      *
      */
     static int findMergeNode(SinglyLinkedListNode head1, SinglyLinkedListNode head2) {
-        return 0;
+        List<SinglyLinkedListNode> list1 = createList(head1);
+        List<SinglyLinkedListNode> list2 = createList(head2);
+        
+        list1.retainAll(list2);
+
+        return list1.get(0).data;
+    }
+
+    private static List<SinglyLinkedListNode> createList(SinglyLinkedListNode head) {
+        final List<SinglyLinkedListNode> list = new ArrayList<>();
+
+        for (SinglyLinkedListNode node = head; node != null; node = node.next) {
+            list.add(node);
+        }
+        
+        return list;
     }
 
     private static final Scanner scanner = new Scanner(System.in);

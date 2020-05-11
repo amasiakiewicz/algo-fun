@@ -29,6 +29,11 @@ public class SolutionTest {
     private Object resultParams() {
         return new Object[] {
                 new Object[] {
+                        Arrays.asList(1L, 3L, 9L, 10L),
+                        3L,
+                        1L
+                },
+                new Object[] {
                         Arrays.asList(1L, 2L, 2L, 4L),
                         2L,
                         2L
@@ -70,8 +75,23 @@ public class SolutionTest {
                 },
                 new Object[] {
                         Arrays.asList(1L, 5L, 5L, 25L, 25L),
-                        5,
-                        4
+                        5L,
+                        4L
+                },
+                new Object[] {
+                        Arrays.asList(1L, 2L, 4L, 6L),
+                        2L,
+                        1L
+                },
+                new Object[] {
+                        Arrays.asList(1L, 1L, 2L, 2L, 4L, 4L, 6L),
+                        2L,
+                        8L
+                },
+                new Object[] {
+                        Arrays.asList(1L, 1L, 1L, 2L, 2L, 2L, 6L),
+                        1L,
+                        2L
                 },
         };
     }

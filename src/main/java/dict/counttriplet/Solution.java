@@ -8,63 +8,54 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Solution {
 
     // Complete the countTriplets function below.
     static long countTriplets(List<Long> arr, long r) {
-        long triplets = 0L;
-
-        final Map<Long, Set<Integer>> valueToIndexesMap = new HashMap<>(arr.size());
-        IntStream
-                .range(0, arr.size())
-                .forEach(i -> {
-                    final HashSet<Integer> indexes = new HashSet<>();
-                    indexes.add(i);
-                    valueToIndexesMap.merge(arr.get(i), indexes, (oldSet, newSet) -> {
-                        oldSet.addAll(newSet);
-                        return oldSet;
-                    });
-                });
-
-        for (int i = 0; i < arr.size() - 2; i++) {
-            final List<Long> subArr = arr.subList(i, arr.size());
-            triplets += countTriplets(i, r, 3, arr, valueToIndexesMap);
-        }
-
-        return triplets;
-    }
-
-    private static long countTriplets(int currentIndex, long r, int i, List<Long> arr, Map<Long, Set<Integer>> valueToIndexesMap) {
-        if (i == 1) {
-            return 1L;
-        }
-
-        if (currentIndex >= arr.size()) {
+        if (arr.size() < 3) {
             return 0L;
         }
 
-        final Long firstElement = arr.get(currentIndex);
-        final long nextElement = firstElement * r;
+        final Map<Long, Long> singleToOccMap = new HashMap<>(arr.size());
+        final Map<Long, Long> pairToOccMap = new HashMap<>(arr.size());
+        final Map<Long, Long> tripletToOccMap = new HashMap<>(arr.size());
+        
+        arr.forEach(l -> {
+            if (l % r != 0) {
+                singleToOccMap.merge(l, 1L, Math::addExact);
+                return;
+            }
+            
+            final long previousL = l / r;
+            
+            final long previousLSingleOccurrences = singleToOccMap.getOrDefault(previousL, 0L);
+            singleToOccMap.merge(l, 1L, Math::addExact);
+            
+            if (previousLSingleOccurrences == 0L) {
+                return;
+            }
 
-        final List<Long> nextElementSearchList = arr.subList(currentIndex + 1, arr.size());
-        final Set<Integer> nextElementIndexes = valueToIndexesMap.getOrDefault(nextElement, new HashSet<>());
-        return nextElementIndexes
+            final long previousLPairOccurrences = pairToOccMap.getOrDefault(previousL, 0L);
+            pairToOccMap.merge(l, previousLSingleOccurrences, Math::addExact);
+
+            if (previousLPairOccurrences == 0) {
+                return;
+            }
+            
+            tripletToOccMap.merge(l, previousLPairOccurrences, Math::addExact);
+        });
+
+        return tripletToOccMap
+                .values()
                 .stream()
-                .filter(index -> index > currentIndex)
-                .mapToLong(nextElementIndex -> {
-                    final List<Long> subList = arr.subList(nextElementIndex, arr.size());
-                    return countTriplets(nextElementIndex, r, i - 1, arr, valueToIndexesMap);
-                })
+                .mapToLong(occ -> occ)
                 .sum();
     }
-
+    
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));

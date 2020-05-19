@@ -3,7 +3,11 @@ package sorting.fraudulent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Solution {
 
@@ -11,23 +15,40 @@ public class Solution {
     static int activityNotifications(int[] expenditure, int d) {
         int result = 0;
 
-        
-        for (int i = d; i < expenditure.length; i++) {
-            int begin = i - d;
-            int end = i - 1;
-            
-            final double middle = (begin + end) / 2.0;
-            final int leftMiddle = (int) Math.floor(middle);
-            int rightMiddle = (int) Math.ceil(middle);
-            if (rightMiddle == d) {
-                rightMiddle = leftMiddle;
-            }
+        final List<Integer> sortedTrailings = Arrays
+                .stream(expenditure)
+                .boxed()
+                .limit(d)
+                .sorted()
+                .collect(Collectors.toList());
 
-            final double median = (expenditure[leftMiddle] + expenditure[rightMiddle]) / 2.0;
-            if ((double) expenditure[i] >= 2.0 * median) {
+        final double middle = (d - 1) / 2.0;
+        final int leftMiddleIndex = (int) Math.floor(middle);
+        int rightMiddleIndex = (int) Math.ceil(middle);
+        if (rightMiddleIndex == d) {
+            rightMiddleIndex = leftMiddleIndex;
+        }
+
+        for (int i = d; i < expenditure.length; i++) {
+            final Integer leftMiddle = sortedTrailings.get(leftMiddleIndex);
+            final Integer rightMiddle = sortedTrailings.get(rightMiddleIndex);
+
+            final double median = (leftMiddle + rightMiddle) / 2.0;
+            final double doubleMedian = 2.0 * median;
+            
+            final int trailing = expenditure[i];
+                       
+            if (trailing > 0 && (double) trailing >= doubleMedian) {
                 result++;
             }
 
+            final int trailingToRemove = expenditure[i - d];
+            final int trailingToRemoveIndex = Collections.binarySearch(sortedTrailings, trailingToRemove);
+            sortedTrailings.remove(trailingToRemoveIndex);
+            
+            final int trailingIndex = Collections.binarySearch(sortedTrailings, trailing);
+            final int insertionIndex = Math.abs(-trailingIndex - 1);
+            sortedTrailings.add(insertionIndex, trailing);
         }
 
         return result;

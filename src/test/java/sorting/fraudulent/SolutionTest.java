@@ -44,6 +44,31 @@ public class SolutionTest {
                         5,
                         0
                 },
+                new Object[] {
+                        new int[] { 1 },
+                        1,
+                        0
+                },
+                new Object[] {
+                        new int[] { 1, 2, 3 },
+                        3,
+                        0
+                },
+                new Object[] {
+                        new int[] { 1, 3, 2 },
+                        2,
+                        0
+                },
+                new Object[] {
+                        new int[] { 0, 0, 0 },
+                        2,
+                        0
+                },
+                new Object[] {
+                        new int[] { 4, 3, 2, 2, 4 },
+                        3,
+                        1
+                },
         };
     }
 

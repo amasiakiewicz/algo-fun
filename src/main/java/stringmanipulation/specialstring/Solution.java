@@ -1,53 +1,102 @@
 package stringmanipulation.specialstring;
 
-import org.apache.commons.lang3.text.StrBuilder;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Solution {
 
     // Complete the substrCount function below.
     static long substrCount(int n, String s) {
-        long result = s.length();
+        long result = 0;
 
-        for (int l = 2; l <= s.length(); l++) {
-            for (int ind = 0; ind <= s.length() - l; ind++) {
-                final String candidate = s.substring(ind, ind + l);
-                boolean isSpecialStr = isSpecialStr(candidate);
-                if (isSpecialStr) {
-                    result++;
+        final Map<Integer, List<Range>> cToRanges = new HashMap<>();
+        final Set<ComplexRange> complexRanges = new HashSet<>();
+
+        for (int i = 0; i < s.length(); i++) {
+            final int c = s.codePointAt(i);
+
+            final List<Range> ranges = new ArrayList<>();
+            final Range range = new Range(i, i + 1);
+            ranges.add(range);
+
+            cToRanges.merge(c, ranges, (ranges1, ranges2) -> {
+                final Range previousRange = ranges1.get(ranges1.size() - 1);
+                final Range nextRange = ranges2.get(0);
+
+                if (nextRange.begin == previousRange.end) {
+                    previousRange.end = nextRange.end;
+                    return ranges1;
                 }
-            }
+
+                if (nextRange.begin - 1 == previousRange.end) {
+                    final ComplexRange complexRange = new ComplexRange(previousRange, nextRange);
+                    complexRanges.add(complexRange);
+                }
+
+                ranges1.addAll(ranges2);
+                return ranges1;
+            });
         }
-        
+
+        result += cToRanges
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .mapToLong(Range::getCount)
+                .sum();
+
+        result += complexRanges
+                .stream()
+                .mapToLong(ComplexRange::getLength)
+                .sum();
+
         return result;
     }
 
-    private static boolean isSpecialStr(final String candidate) {
-        if (candidate.length() == 0 || candidate.length() == 1) {
-            return true;
+    private static class Range {
+        private final int begin;
+        private int end;
+
+        private Range(final int begin, final int end) {
+            this.begin = begin;
+            this.end = end;
         }
 
-        if (candidate.length() % 2 == 0) {
-            final long distinctCount = candidate
-                    .codePoints()
-                    .distinct()
-                    .count();
-            return distinctCount == 1;
+        private long getCount() {
+            final long length = getLength();
+            return (length * (length + 1)) / 2;
         }
 
-        if (candidate.length() % 2 != 0) {
-            final int middleInd = candidate.length() / 2;
-            final String candidateWithoutMiddle = new StrBuilder(candidate)
-                    .deleteCharAt(middleInd)
-                    .toString();
-            return isSpecialStr(candidateWithoutMiddle);
+        private int getLength() {
+            return end - begin;
         }
-        
-        return false;
+
+    }
+
+    private static class ComplexRange {
+        private final Range previousRange;
+        private final Range nextRange;
+
+        public ComplexRange(final Range previousRange, final Range nextRange) {
+            this.previousRange = previousRange;
+            this.nextRange = nextRange;
+        }
+
+        private int getLength() {
+            final int previousRangeLength = previousRange.getLength();
+            final int nextRangeLength = nextRange.getLength();
+
+            return Math.min(previousRangeLength, nextRangeLength);
+        }
     }
 
     private static final Scanner scanner = new Scanner(System.in);

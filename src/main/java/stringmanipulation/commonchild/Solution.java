@@ -3,13 +3,32 @@ package stringmanipulation.commonchild;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
+
+import static java.util.stream.Collectors.toList;
 
 public class Solution {
 
     // Complete the commonChild function below.
     static int commonChild(String s1, String s2) {
-        return 0;
+        if (s1.equals(s2)) {
+            return s1.length();
+        }
+
+        final List<Integer> s1Points = s1
+                .codePoints()
+                .boxed()
+                .collect(toList());
+        
+        final List<Integer> s2Points = s2
+                .codePoints()
+                .boxed()
+                .collect(toList());
+        
+        s1Points.retainAll(s2Points);
+
+        return s1Points.size();
     }
 
     private static final Scanner scanner = new Scanner(System.in);

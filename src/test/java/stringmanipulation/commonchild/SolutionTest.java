@@ -1,11 +1,11 @@
 package stringmanipulation.commonchild;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.assertj.core.api.Assertions.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class SolutionTest {
@@ -43,6 +43,11 @@ public class SolutionTest {
                         "ABCDEF",
                         "FBDAMN",
                         2
+                },
+                new Object[] {
+                        "ABCDBF",
+                        "FBDABM",
+                        3
                 },
         };
     }

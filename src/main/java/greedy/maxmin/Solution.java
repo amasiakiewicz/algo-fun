@@ -3,13 +3,28 @@ package greedy.maxmin;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Solution {
 
     // Complete the maxMin function below.
     static int maxMin(int k, int[] arr) {
-        return 0;
+        int minDiff = Integer.MAX_VALUE;
+
+        final List<Integer> sortedInts = Arrays
+                .stream(arr)
+                .sorted()
+                .boxed()
+                .collect(Collectors.toList());
+        for (int i = k - 1; i < sortedInts.size(); i++) {
+            final int diff = sortedInts.get(i) - sortedInts.get(i - k + 1);
+            minDiff = Math.min(minDiff, diff);
+        }
+
+        return minDiff;
     }
 
     private static final Scanner scanner = new Scanner(System.in);

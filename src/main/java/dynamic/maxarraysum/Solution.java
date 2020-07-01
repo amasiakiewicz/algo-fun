@@ -3,90 +3,30 @@ package dynamic.maxarraysum;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Solution {
 
     // Complete the maxSubsetSum function below.
     static int maxSubsetSum(int[] arr) {
-        final int max = Arrays
-                .stream(arr)
-                .max()
-                .orElseThrow(IllegalAccessError::new);
-
-        if (max <= 0) {
-            return max;
+        if (arr.length == 1) {
+            return arr[0];
         }
 
-        final List<Integer> elements = Arrays
-                .stream(arr)
-                .boxed()
-                .collect(Collectors.toList());
-        final List<IndElement> subset = new ArrayList<>();
-        final HashMap<Integer, Integer> indToSumMap = new HashMap<>();
-
-        maxSubsetSum(0, elements, subset, indToSumMap);
-
-        return indToSumMap
-                .values()
-                .stream()
-                .mapToInt(e -> e)
-                .max()
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private static void maxSubsetSum(
-            int i, final List<Integer> elements, final List<IndElement> subset, final Map<Integer, Integer> indToSumMap
-    ) {
-        int lastAddedInd = Integer.MIN_VALUE;
-
-        for (; i < elements.size(); i++) {
-            if (indToSumMap.containsKey(i)) {
-                final int element = indToSumMap.get(i);
-                final IndElement indElement = new IndElement(i, element);
-                subset.add(indElement);
-                break;
-            }
-            
-            final int element = elements.get(i);
-            if (element <= 0) {
-                continue;
-            }
-
-            if (i - 1 > lastAddedInd) {
-                final IndElement indElement = new IndElement(i, element);
-                subset.add(indElement);
-                lastAddedInd = i;
-                continue;
-            }
-
-            final List<IndElement> newSubset = new ArrayList<>(subset.subList(0, subset.size() - 1));
-            maxSubsetSum(i, elements, newSubset, indToSumMap);
+        int maxSum = Math.max(arr[0], arr[1]);
+        if (arr.length == 2) {
+            return maxSum;
         }
 
-        int intermediateSum = 0;
-        for (int j = subset.size() - 1; j >= 0; j--) {
-            final IndElement indElement = subset.get(j);
-            intermediateSum += indElement.element;
-            indToSumMap.merge(indElement.index, intermediateSum, Math::max);
+        int maxSum_1 = arr[0];
+        for (int i = 2; i < arr.length; i++) {
+            int localSum = arr[i] + maxSum_1;
+            localSum = Math.max(localSum, arr[i]);
+            maxSum_1 = maxSum;
+            maxSum = Math.max(maxSum, localSum);
         }
-
-    }
-
-    private static class IndElement {
-        private final int index;
-        private final int element;
-
-        IndElement(final int index, final int element) {
-            this.index = index;
-            this.element = element;
-        }
+        
+        return maxSum;
     }
 
     private static final Scanner scanner = new Scanner(System.in);

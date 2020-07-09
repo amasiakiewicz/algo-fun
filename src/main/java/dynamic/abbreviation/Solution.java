@@ -4,51 +4,86 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Solution {
 
     // Complete the abbreviation function below.
     static String abbreviation(String a, String b) {
-        int iB = 0;
-        char cB = b.charAt(iB);
-        char lowerCandidate = ' ';
+        final Set<Character> aUpperChars = a
+                .codePoints()
+                .mapToObj(c -> (char) c)
+                .filter(Character::isUpperCase)
+                .collect(Collectors.toSet());
 
+        final CharacterInString bCharInString = CharacterInString.create(b);
         for (int iA = 0; iA < a.length(); iA++) {
-            final char cA = a.charAt(iA);
-            if (cA == cB) {
-                if (iB >= b.length() - 1) {
-                    iB = b.length();
-                    cB = ' ';
-                    continue;
+            char aChar = a.charAt(iA);
+            if (Character.isUpperCase(aChar)) {
+                if (!bCharInString.isEqualTo(aChar)) {
+                     return "NO";                   
                 }
-                iB++;
-                cB = b.charAt(iB);
+                
+                bCharInString.nextChar();
                 continue;
             }
 
-            if (Character.isUpperCase(cA)) {
-                if (cA == Character.toUpperCase(lowerCandidate)) {
-                    lowerCandidate = ' ';
-                    continue;
-                }
-                return "NO";
-            }
-
-            if (Character.toUpperCase(cA) != cB) {
+            aChar = Character.toUpperCase(aChar);
+            if (!bCharInString.isEqualTo(aChar)) {
                 continue;
             }
 
-            lowerCandidate = cA;
-            if (iB >= b.length() - 1) {
-                iB = b.length();
-                cB = ' ';
+            if (bCharInString.isPresentIn(aUpperChars)) {
                 continue;
             }
-            iB++;
-            cB = b.charAt(iB);
+            
+            bCharInString.nextChar();
         }
 
-        return iB == b.length() ? "YES" : "NO";
+        return bCharInString.hasEnded() ? "YES" : "NO";
+    }
+    
+    private static class CharacterInString {
+        private int index;
+        private char character;
+        private String string;
+
+        private static CharacterInString create(final String string) {
+            final int index = 0;
+            final char character = string.charAt(index);
+            
+            return new CharacterInString(index, character, string);
+        }
+
+        private CharacterInString(final int index, final char character, final String string) {
+            this.index = index;
+            this.character = character;
+            this.string = string;
+        }
+
+        private boolean isEqualTo(final char character) {
+            return this.character == character;
+        }
+
+        private void nextChar() {
+            if (index < string.length() - 1) {
+                index++;
+                character = string.charAt(index);
+                return;
+            }
+            
+            index = string.length();
+            character = ' ';
+        }
+
+        public boolean isPresentIn(final Set<Character> aUpperChars) {
+            return aUpperChars.contains(character);
+        }
+
+        public boolean hasEnded() {
+            return index == string.length();
+        }
     }
 
     private static final Scanner scanner = new Scanner(System.in);

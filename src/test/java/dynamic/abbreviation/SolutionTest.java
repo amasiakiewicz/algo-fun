@@ -21,9 +21,39 @@ public class SolutionTest {
         //then
         assertThat(abbreviation).isEqualTo(expectedAbbreviation);
     }
-
+    
     private Object resultParams() {
         return new Object[] {
+                new Object[] {
+                        "alsAslAs",
+                        "ALAS",
+                        "YES"
+                },                 
+                new Object[] {
+                        "alsAs",
+                        "ALAS",
+                        "YES"
+                },               
+                new Object[] {
+                        "daBcd",
+                        "ABC",
+                        "YES"
+                },
+                new Object[] {
+                        "bBccC",
+                        "BBC",
+                        "YES"
+                },
+                new Object[] {
+                        "abBAcbbdEe",
+                        "ABADE",
+                        "YES"
+                },
+                new Object[] {
+                        "abABAcbbdEe",
+                        "ABADE",
+                        "YES"
+                },
                 new Object[] {
                         "abABcbbdEe",
                         "ABDE",
@@ -53,17 +83,17 @@ public class SolutionTest {
                         "EEfg",
                         "EFG",
                         "NO"
-                },                  
+                },
                 new Object[] {
                         "ADbbDE",
                         "ABDE",
                         "NO"
-                },         
+                },
                 new Object[] {
                         "AbcDE",
                         "ABDE",
                         "YES"
-                },               
+                },
                 new Object[] {
                         "AcDEb",
                         "ABDE",
@@ -73,11 +103,6 @@ public class SolutionTest {
                         "AbcDE",
                         "AFDE",
                         "NO"
-                },
-                new Object[] {
-                        "daBcd",
-                        "ABC",
-                        "YES"
                 },
                 new Object[] {
                         "aB",

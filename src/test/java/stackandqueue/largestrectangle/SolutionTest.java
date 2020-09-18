@@ -25,8 +25,20 @@ public class SolutionTest {
     private Object resultParams() {
         return new Object[] {
                 new Object[] {
-                        new int[] {1, 2, 3, 4, 5},
+                        new int[] { 1, 2, 5, 4, 3 },
                         9L,
+                },
+                new Object[] {
+                        new int[] { 1, 2, 3, 4, 5 },
+                        9L,
+                },
+                new Object[] {
+                        new int[] { 1, 2, 3, 4, 5, 1, 1, 1, 9, 9 },
+                        18L,
+                },
+                new Object[] {
+                        new int[] { 1, 3, 6, 8, 7, 2, 4, 1 },
+                        18L,
                 },
         };
     }

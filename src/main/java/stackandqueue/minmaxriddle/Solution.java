@@ -4,59 +4,105 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.TreeMap;
 
 public class Solution {
 
     // Complete the riddle function below.
     static long[] riddle(long[] arr) {
-        final long[] result = new long[arr.length];
+        final Map<Integer, Long> sizeToValueMap = createSizeToValueMap(arr);
 
-        final Deque<Long> leftStack = Arrays
-                .stream(arr)
-                .boxed()
-                .collect(Collectors.toCollection(ArrayDeque::new));
-        final Deque<Long> rightStack = new ArrayDeque<>(arr.length);
+        return convertSizeMapToResult(sizeToValueMap, arr.length);
+    }
 
-        result[0] = Arrays
-                .stream(arr)
-                .max()
-                .getAsLong();
+    private static long[] convertSizeMapToResult(final Map<Integer, Long> sizeToValueMap, final int maxWindowSize) {
+        final TreeMap<Integer, Long> sortedSizeToValueMap = new TreeMap<>(sizeToValueMap);
+        final long[] result = new long[maxWindowSize];
 
-        Deque<Long> full = leftStack;
-        Deque<Long> empty = rightStack;
-        Deque<Long> tmp;
+        final long[] previousValue = { Long.MIN_VALUE };
+        sortedSizeToValueMap
+                .descendingMap()
+                .values()
+                .removeIf(v -> {
+                    previousValue[0] = Math.max(previousValue[0], v);
+                    return v < previousValue[0];
+                });
 
-        int i = 1;
-        long max, min;
-        Long last, last_1;
-        while (leftStack.size() != 1 && rightStack.size() != 1) {
-            max = Long.MIN_VALUE;
-
-            while (!full.isEmpty()) {
-                last = full.removeLast();
-                last_1 = full.peekLast();
-                if (last_1 == null) {
-                    continue;
-                }
-
-                min = Math.min(last, last_1);
-                empty.addLast(min);
-                max = Math.max(max, min);
-            }
-
-            result[i] = max;
-            i++;
-
-            tmp = full;
-            full = empty;
-            empty = tmp;
+        for (int i = 1; i <= maxWindowSize; i++) {
+            final Long value = sortedSizeToValueMap
+                    .ceilingEntry(i)
+                    .getValue();
+            result[i - 1] = value;
         }
 
         return result;
+    }
+
+    private static Map<Integer, Long> createSizeToValueMap(final long[] arr) {
+        final Map<Integer, Long> sizeToValueMap = new HashMap<>(arr.length);
+
+        final Deque<Window> windows = new ArrayDeque<>();
+        final Window firstWindow = new Window(arr[0], 0);
+        windows.addLast(firstWindow);
+        sizeToValueMap.put(1, arr[0]);
+
+        for (int i = 1; i < arr.length; i++) {
+            Window previousWindow = windows.peekLast();
+            final long value = arr[i];
+
+            if (previousWindow.value == value) {
+                continue;
+            }
+
+            if (previousWindow.value < value) {
+                final Window window = new Window(value, i);
+                windows.addLast(window);
+                continue;
+            }
+
+            int startPos = previousWindow.startPos;
+            while (!windows.isEmpty() && previousWindow.value > value) {
+                windows.removeLast();
+                previousWindow.putInMap(sizeToValueMap, i);
+
+                startPos = previousWindow.startPos;
+
+                previousWindow = windows.peekLast();
+            }
+
+            if (windows.isEmpty() || previousWindow.value < value) {
+                final Window window = new Window(value, startPos);
+                windows.addLast(window);
+            }
+
+        }
+
+        while (!windows.isEmpty()) {
+            final Window window = windows.removeLast();
+            window.putInMap(sizeToValueMap, arr.length);
+        }
+
+        return sizeToValueMap;
+    }
+
+    private static class Window {
+
+        private final long value;
+        private final int startPos;
+
+        public Window(final long value, final int startPos) {
+            this.value = value;
+            this.startPos = startPos;
+        }
+
+        public void putInMap(final Map<Integer, Long> sizeToValueMap, final int endPos) {
+            final int windowSize = endPos - startPos;
+            sizeToValueMap.merge(windowSize, value, Math::max);
+        }
     }
 
     private static final Scanner scanner = new Scanner(System.in);

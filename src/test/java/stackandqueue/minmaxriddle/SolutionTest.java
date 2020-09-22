@@ -25,6 +25,10 @@ public class SolutionTest {
     private Object resultParams() {
         return new Object[] {
                 new Object[] {
+                        new long[] { 11, 2, 3, 14, 5, 2, 11, 12 },
+                        new long[] { 14, 11, 3, 2, 2, 2, 2, 2 },
+                },
+                new Object[] {
                         new long[] { 6, 3, 5, 1, 12 },
                         new long[] { 12, 3, 3, 1, 1 },
                 },

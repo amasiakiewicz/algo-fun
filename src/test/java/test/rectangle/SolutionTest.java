@@ -23,7 +23,7 @@ public class SolutionTest {
         final Collection<Rectangle> rectangles = Solution.getRectangles(image);
 
         //then
-        assertThat(rectangles).containsExactlyElementsOf(expectedRectangles);
+        assertThat(rectangles).containsOnlyElementsOf(expectedRectangles);
     }
 
     private Object resultParams() {
@@ -41,6 +41,9 @@ public class SolutionTest {
                                 { 1, 1, 1, 1, 0, 0, 1, 1 },
                                 { 0, 0, 1, 1, 0, 0, 1, 1 },
                                 { 1, 1, 1, 1, 1, 1, 1, 1 },
+                                { 0, 1, 1, 1, 1, 1, 1, 1 },
+                                { 0, 1, 1, 1, 1, 1, 1, 1 },
+                                { 1, 1, 1, 1, 1, 1, 1, 1 },
                         },
                         Lists.newArrayList(
                                 Rectangle.create(0, 0, 3, 1),
@@ -48,7 +51,8 @@ public class SolutionTest {
                                 Rectangle.create(3, 4, 5, 6),
                                 Rectangle.create(5, 1, 7, 1),
                                 Rectangle.create(8, 4, 9, 5),
-                                Rectangle.create(9, 0, 9, 1)
+                                Rectangle.create(9, 0, 9, 1),
+                                Rectangle.create(11, 0, 12, 0)
                         )
                 },
                 new Object[] {

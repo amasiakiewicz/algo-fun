@@ -1,9 +1,8 @@
 package test.rectangle;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 class Solution {
 
@@ -19,14 +18,13 @@ class Solution {
             { 1, 1, 1, 1, 1, 1, 1 },
     };
 
-    static Collection<Rectangle> getRectangles(final int[][] image) {
-        final Map<Integer, Rectangle> rectangleId2RectangleMap = new HashMap<>();
+    static Set<Rectangle> getRectangles(final int[][] image) {
+        final Set<Rectangle> rectangles = new HashSet<>();
 
         final int imageWidth = image.length;
         final int imageHeight = image[0].length;
 
-        int rectangleId = 0;
-        final int[][] rectangleIds = new int[imageWidth][imageHeight];
+        final Rectangle[][] rectanglesImage = new Rectangle[imageWidth][imageHeight];
 
         for (int i = 0; i < imageWidth; i++) {
             for (int j = 0; j < imageHeight; j++) {
@@ -37,27 +35,25 @@ class Solution {
                 }
 
                 if ((i - 1 < 0 || image[i - 1][j] == 1) && (j - 1 < 0 || image[i][j - 1] == 1)) { //it's a new rectangle
-                    rectangleId++;
-                    rectangleIds[i][j] = rectangleId;
 
                     final Coord startPos = new Coord(i, j);
                     final Rectangle rectangle = new Rectangle(startPos);
-                    rectangleId2RectangleMap.put(rectangleId, rectangle);
+                    rectanglesImage[i][j] = rectangle;
+                    rectangles.add(rectangle);
 
                     continue;
                 }
 
-                int currentRectangleId = (i - 1 >= 0 && rectangleIds[i - 1][j] != 0)
-                        ? rectangleIds[i - 1][j]
-                        : rectangleIds[i][j - 1];
+                final Rectangle currentRectangle = (i - 1 >= 0 && rectanglesImage[i - 1][j] != null)
+                        ? rectanglesImage[i - 1][j]
+                        : rectanglesImage[i][j - 1];
 
-                rectangleIds[i][j] = currentRectangleId;
-                final Rectangle rectangle = rectangleId2RectangleMap.get(currentRectangleId);
-                rectangle.endPos = new Coord(i, j);
+                rectanglesImage[i][j] = currentRectangle;
+                currentRectangle.endPos = new Coord(i, j);
             }
         }
 
-        return rectangleId2RectangleMap.values();
+        return rectangles;
     }
 
     static class Rectangle {
@@ -139,7 +135,7 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        final Collection<Rectangle> rectangles = getRectangles(image);
+        final Set<Rectangle> rectangles = getRectangles(image);
 
         int[] ind = { 0 };
         rectangles.forEach(rectangle -> {
